@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Ingatkan Minum Obat</title>
+</head>
+<body>
+	<h1>Ingatkan Minum Obat</h1>
+	<p>Silakan masukkan waktu dan pesan pengingat untuk minum obat:</p>
+	<label for="waktu">Waktu:</label>
+	<input type="time" id="waktu">
+	<label for="pesan">Pesan:</label>
+	<input type="text" id="pesan">
+	<button onclick="setReminder()">Set Pengingat</button>
+
+	<script>
+		function setReminder() {
+			// Ambil nilai waktu dan pesan dari input
+			const waktu = document.getElementById("waktu").value;
+			const pesan = document.getElementById("pesan").value;
+
+			// Buat objek Date berdasarkan nilai waktu
+			const reminderTime = new Date();
+			const timeArray = waktu.split(":");
+			reminderTime.setHours(parseInt(timeArray[0]));
+			reminderTime.setMinutes(parseInt(timeArray[1]));
+
+			// Buat pengingat menggunakan API Notification
+			if (Notification.permission === "granted") {
+				const notification = new Notification("Ingatkan Minum Obat", {
+					body: pesan,
+					icon: "icon.png",
+					vibrate: [200, 100, 200]
+				});
+
+				// Atur waktu pengingat
+				setTimeout(notification.close.bind(notification), 5000);
+			} else if (Notification.permission !== "denied") {
+				Notification.requestPermission().then(permission => {
+					if (permission === "granted") {
+						setReminder();
+					}
+				});
+			}
+		}
+	</script>
+</body>
+</html>
